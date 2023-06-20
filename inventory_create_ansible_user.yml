@@ -1,0 +1,13 @@
+vps:
+  hosts:
+    vps01:
+      ansible_host: 159.223.68.59
+    vps02:
+      ansible_host: 159.223.76.128
+  vars:
+    ansible_user: root
+    new_ansible_user: ansible
+    new_ansible_password: ansible
+network:
+  children:
+    vps:

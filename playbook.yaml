@@ -1,0 +1,91 @@
+- name: Install OS dependencies
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg', 'lsb-release']
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+    
+    - name: Install Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        mode: "ugo+rx"
+    
+    - name: Install required packages
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - nginx
+        state: present
+
+- name: Clone Project from source control
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Clone a github repository
+      git:
+        repo: https://github.com/HuyNguyenDinh/night_owl_V2.git
+        dest: /mnt/night-owl-market
+        clone: yes
+        update: yes
+        force: yes
+
+# - name: Create virtual environment and install python's package dependencies
+#   hosts: vps
+#   become: yes
+#   tasks:
+#     - name: Create virtual environment directory
+#       file:
+#         path: "/mnt/night-owl-market"
+#         state: directory
+#     - name: Create virtual environment
+#       command: python3 -m venv /mnt/night-owl-market
+
+#     - name: Activate virtual environment
+#       shell: . /mnt/night-owl-market/bin/activate
+    
+#     - name: Upgrade pip
+#       pip:
+#         name: pip
+#         state: latest
+    
+#     - name: Install required packages
+#       pip:
+#         requirements: /mnt/night_owl_V2/requirements.txt
+#         virtualenv: /mnt/night-owl-market
+
+- name: Run Django with Docker Compose
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Make env file
+      file:
+        path: /mnt/night-owl-market/docker/.env
+        state: touch
+        mode: "0644"
+
+    - name: Run Docker Compose
+      command: docker-compose -f /mnt/night-owl-market/docker/docker-compose.yml up -d
