@@ -1,0 +1,33 @@
+- name: Install OS dependencies
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'lsb-release']
+        state: present
+        update_cache: true
+        install_recommends: true
+
+    - name: Install required packages
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - nginx
+        state: present
+
+- name: Clone Project from source control
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Clone repository
+      git:
+        repo: http://{{ gitlabuser | urlencode }}:{{ gitlabpassword | urlencode }}@git.yeahspace.net/huynd86/mock-api-fastapi.git
+        dest: /mnt/mock-api-fastapi
+        clone: yes
+        update: yes
+        force: yes
+        accept_hostkey: yes
+        key_file: ./id_rsa.pub

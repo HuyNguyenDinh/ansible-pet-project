@@ -1,9 +1,9 @@
 vps:
   hosts:
     vps01:
-      ansible_host: 159.223.68.59
+      ansible_host: 192.168.56.10
     vps02:
-      ansible_host: 159.223.76.128
+      ansible_host: 192.168.56.11
   vars:
     ansible_user: ansible
     ansible_ssh_pass: ansible123
