@@ -1,0 +1,31 @@
+- name: Install OS dependencies
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: tasks/install_os_dependencies.yaml
+
+- name: Clone Project from source control
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: tasks/clone_project.yaml
+
+    - include_tasks: tasks/python36/virtualenv.yaml
+      when: ansible_facts['distribution'] == "CentOS"
+    
+    - include_tasks: tasks/python310/venv.yaml
+      when: ansible_facts['distribution'] == "Ubuntu"
+    
+    - name: Create log dir
+      shell: mkdir -p {{ projectlocation | urlencode }}/logs/
+
+    - name: grant permission log dir
+      shell: chmod --recursive 777 {{ projectlocation | urlencode }}/logs/
+
+    - include_tasks: tasks/compile_source.yaml
+
+- name: Update service
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: tasks/update_service.yaml

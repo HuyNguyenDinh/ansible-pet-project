@@ -1,0 +1,21 @@
+---
+- include_tasks: tasks/python36/centos_dependencies.yaml
+  when: ansible_facts['distribution'] == "CentOS"
+
+- include_tasks: tasks/python310/ubuntu_dependencies.yaml
+  when: ansible_facts['distribution'] == "Ubuntu"
+  
+- name: Install dependencies
+  package:
+    name:
+      - ca-certificates
+      - curl
+      - git
+      - python3
+      - python3-pip
+      - python3-setuptools
+      - gcc
+      - python-setuptools
+      - nginx
+    state: present
+    update_cache: true

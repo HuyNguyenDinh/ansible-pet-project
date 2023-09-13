@@ -1,0 +1,31 @@
+---
+- name: Copy service to remote host
+  copy:
+    src: "{{inventory_dir}}/../../services/{{ projectname | urlencode }}/{{ servicename | urlencode }}"
+    dest: "/etc/systemd/system/{{ servicename | urlencode }}"
+
+- name: Run service
+  systemd:
+    state: started
+    name: "{{ servicename | urlencode }}"
+  
+- name: Stop service
+  systemd:
+    state: stopped
+    name: "{{ servicename | urlencode }}"
+
+- name: Restart service
+  systemd:
+    state: restarted
+    daemon_reload: true
+    name: "{{ servicename | urlencode }}"
+
+- name: Enable service
+  systemd:
+    enabled: true
+    masked: false
+    name: "{{ servicename | urlencode }}"
+    
+- name: Force systemd to reread configs
+  systemd:
+    daemon_reload: true

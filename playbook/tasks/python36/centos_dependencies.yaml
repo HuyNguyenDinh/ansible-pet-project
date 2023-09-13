@@ -1,0 +1,10 @@
+---
+- name: Install dependencies centos
+  package:
+    name:
+      - epel-release
+      - python3-devel
+      - mariadb-devel
+    state: present
+    update_cache: true
+    skip_broken: true

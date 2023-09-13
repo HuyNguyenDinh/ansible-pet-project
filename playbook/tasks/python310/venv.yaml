@@ -1,0 +1,10 @@
+---
+- name: Install UWSGI
+  pip:
+    executable: /bin/pip3
+- name: Install venv and required python packages
+  pip:
+    chdir: {{ projectlocation | urlencode }}
+    virtualenv_command: python3.10 -m venv
+    virtualenv: {{ projectlocation | urlencode }}/venv
+    requirements: {{ projectlocation | urlencode }}/{{ requirementfile | urlencode }}

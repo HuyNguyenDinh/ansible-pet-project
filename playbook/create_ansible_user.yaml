@@ -1,5 +1,5 @@
 - name: Create ansible user
-  hosts: vps
+  hosts: all
   gather_facts: no
   become: true
   tasks:

@@ -1,0 +1,23 @@
+---
+- name: Install deadsnake ppa
+  apt_repository:
+    repo: ppa:deadsnakes/ppa
+    update_cache: true
+
+- name: Install dependencies ubuntu
+  apt:
+    name:
+      - apt-transport-https
+      - lsb-release
+      - software-properties-common
+      - python3.10-venv
+      - python3.10-dev
+      - default-libmysqlclient-dev
+      - build-essential
+      - pkg-config
+      - libcairo2-dev
+      - libgirepository1.0-dev
+      - libcups2-dev
+    state: present
+    update_cache: true
+    install_recommends: true

@@ -1,0 +1,28 @@
+---
+- name: create environment directory if not exist
+  shell: mkdir -p /mnt/environment
+
+- name: backup .env file if exist
+  shell: find {{ projectlocation | urlencode }} -name ".env" -exec cp -- "{}" /mnt/environment/{{ projectname | urlencode}}/.env \;
+
+- name: compile source python 3.10
+  when: ansible_facts['distribution'] == "Ubuntu"
+  shell:
+    chdir: "{{ projectlocation | urlencode }}"
+    cmd: "{{ projectlocation | urlencode }}/venv/bin/python3.10 -m compileall -b ."
+
+- name: compile source python 3.6
+  when: ansible_facts['distribution'] == "CentOS"
+  shell: 
+    chdir: "{{ projectlocation | urlencode }}"
+    cmd: "{{ projectlocation | urlencode }}/venv/bin/python3 -m compileall -b ."
+
+- name: Delete source file
+  shell: 
+    chdir: "{{ projectlocation | urlencode }}"
+    cmd: find . -maxdepth 4 -name "*.py" -not -path "./*/*/migrations/*" -not -path "./*/*/migrations/__init__.py" -not -path "./*/migrations/*" -not -path "./*/migrations/__init__.py" -delete
+
+- name: copy backup file .env
+  shell: 
+    cmd: "cp -u /mnt/environment/{{ projectname | urlencode}}/.env {{ projectlocation | urlencode }}/.env"
+  ignore_errors: true

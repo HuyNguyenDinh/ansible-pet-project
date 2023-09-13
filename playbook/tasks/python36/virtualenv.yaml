@@ -1,0 +1,23 @@
+---
+- name: Install python setuptools
+  pip:
+    executable: /usr/bin/pip3
+    name:
+      - setuptools
+      - virtualenv
+      - pip
+    state: latest
+    
+- name: Install virtualenv and required python packages
+  pip:
+    chdir: "{{ projectlocation | urlencode }}"
+    virtualenv_command: python3 -m virtualenv
+    virtualenv: "{{ projectlocation | urlencode }}/venv"
+    requirements: "{{ projectlocation | urlencode }}/{{ requirementfile | urlencode }}"
+  
+- name: Install uwsgi for virtualenv
+  pip:
+    chdir: "{{ projectlocation | urlencode }}"
+    virtualenv_command: python3 -m virtualenv
+    virtualenv: "{{ projectlocation | urlencode }}/venv"
+    name: uwsgi

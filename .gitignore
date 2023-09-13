@@ -1,3 +1,5 @@
 *env*
+!*.yaml
 id_rsa.pub
+id_rsa
 .vagrant

@@ -1,0 +1,8 @@
+---
+- name: Clone repository
+  git:
+    repo: "{{ gitlabprotocol }}://{{ gitlabuser | urlencode }}:{{ gitlabpassword | urlencode }}@{{ gitlabinstance | urlencode }}/{{ gitlabrepo | urlencode }}"
+    dest: "{{ projectlocation | urlencode }}"
+    clone: yes
+    update: no
+    force: yes
